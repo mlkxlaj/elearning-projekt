@@ -12,5 +12,5 @@ public class Student {
     private String name;
     private String email;
     private String teacher;
-    private int rate;
+    private Integer rate;
 }
