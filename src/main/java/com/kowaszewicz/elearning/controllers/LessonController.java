@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -65,6 +66,17 @@ public class LessonController {
         lesson.setTopic(upadtedLesson.getTopic());
         return new ResponseEntity(lesson, HttpStatus.OK);
     }
-
+    @PatchMapping
+    public ResponseEntity editLessonPartially(@RequestBody Lesson upadtedLesson) {
+        if (lessons.stream().noneMatch(lesson -> lesson.getLessonId() == upadtedLesson.getLessonId())) {
+            return new ResponseEntity("Brak lesson o danym id", HttpStatus.BAD_REQUEST);
+        }
+        Lesson lesson = lessons.stream().filter(l -> l.getLessonId() == upadtedLesson.getLessonId()).findAny().get();
+        Optional.ofNullable(upadtedLesson.getDate()).ifPresent(lesson::setDate);
+        Optional.ofNullable(upadtedLesson.getStudentName()).ifPresent(lesson::setStudentName);
+        Optional.ofNullable(upadtedLesson.getTeacherName()).ifPresent(lesson::setTeacherName);
+        Optional.ofNullable(upadtedLesson.getTopic()).ifPresent(lesson::setTopic);
+        return new ResponseEntity(lesson, HttpStatus.OK);
+    }
 
 }
